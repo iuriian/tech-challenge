@@ -1,4 +1,4 @@
-package br.com.fiap.oficina.shared.domain
+package br.com.fiap.oficina.shared.domain.valueobject
 
 import java.util.UUID
 
