@@ -4,8 +4,10 @@ import br.com.fiap.oficina.cliente.application.dto.ContatoRequest
 import br.com.fiap.oficina.cliente.application.dto.ContatoResponse
 import br.com.fiap.oficina.cliente.domain.Contato
 import br.com.fiap.oficina.shared.application.mapper.ApplicationMapper
+import org.springframework.stereotype.Component
 
-class ContatoMapper : ApplicationMapper<Contato, ContatoRequest, ContatoResponse> {
+@Component
+internal class ContatoMapper : ApplicationMapper<Contato, ContatoRequest, ContatoResponse> {
     override fun toDomain(request: ContatoRequest): Contato =
         Contato.criar(
             tipo = request.tipo,

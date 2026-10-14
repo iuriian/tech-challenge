@@ -7,7 +7,7 @@ import br.com.fiap.oficina.shared.application.mapper.ApplicationMapper
 import org.springframework.stereotype.Component
 
 @Component
-class EnderecoMapper : ApplicationMapper<Endereco, EnderecoRequest, EnderecoResponse> {
+internal class EnderecoMapper : ApplicationMapper<Endereco, EnderecoRequest, EnderecoResponse> {
     override fun toDomain(request: EnderecoRequest): Endereco =
         Endereco.criar(
             logradouro = request.logradouro,

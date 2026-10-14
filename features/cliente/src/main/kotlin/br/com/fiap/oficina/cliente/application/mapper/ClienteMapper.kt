@@ -10,7 +10,7 @@ import br.com.fiap.oficina.shared.domain.valueobject.Document
 import org.springframework.stereotype.Component
 
 @Component
-class ClienteMapper(
+internal class ClienteMapper(
     private val enderecoMapper: EnderecoMapper,
     private val contatoMapper: ContatoMapper,
 ) : ApplicationMapper<Cliente, ClienteRequest, ClienteResponse> {
