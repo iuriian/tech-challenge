@@ -1,9 +1,7 @@
-package br.com.fiap.oficina.domain.entity
-
-import br.com.fiap.oficina.domain.valueobject.Id
+package br.com.fiap.oficina.cliente.domain
 
 data class Endereco(
-    val id: Id,
+    val id: EnderecoId,
     val logradouro: String,
     val numero: String,
     val complemento: String? = null,
@@ -30,7 +28,7 @@ data class Endereco(
             require(cep.isNotBlank()) { "CEP é obrigatório" }
 
             return Endereco(
-                id = Id.generate(),
+                id = EnderecoId.generate(),
                 logradouro = logradouro,
                 numero = numero,
                 complemento = complemento,
@@ -40,5 +38,26 @@ data class Endereco(
                 cep = cep,
             )
         }
+
+        fun reconstruir(
+            id: String,
+            logradouro: String,
+            numero: String,
+            complemento: String? = null,
+            bairro: String,
+            cidade: String,
+            estado: String,
+            cep: String,
+        ): Endereco =
+            Endereco(
+                id = EnderecoId.toUUID(id),
+                logradouro = logradouro,
+                numero = numero,
+                complemento = complemento,
+                bairro = bairro,
+                cidade = cidade,
+                estado = estado,
+                cep = cep,
+            )
     }
 }
