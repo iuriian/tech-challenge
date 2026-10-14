@@ -1,4 +1,4 @@
-package br.com.fiap.oficina.application.dto
+package br.com.fiap.oficina.cliente.application.dto
 
 data class ClienteResponse(
     val id: String,

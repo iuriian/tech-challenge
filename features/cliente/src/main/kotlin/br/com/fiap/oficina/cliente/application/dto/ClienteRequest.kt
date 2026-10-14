@@ -1,6 +1,6 @@
-package br.com.fiap.oficina.application.dto
+package br.com.fiap.oficina.cliente.application.dto
 
-data class CriarClienteRequest(
+data class ClienteRequest(
     val nome: String,
     val numeroDocumento: String,
     val tipoPessoa: String,
