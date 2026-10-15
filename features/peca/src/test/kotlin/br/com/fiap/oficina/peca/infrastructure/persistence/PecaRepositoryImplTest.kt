@@ -30,13 +30,13 @@ class PecaRepositoryImplTest {
         val jpaSalva = pecaJPA(nome = "Nome persistido")
         val pecaSalva = peca(nome = "Nome persistido")
 
-        every { mapperMock.toJpa(peca) } returns jpa
+        every { mapperMock.toJPA(peca) } returns jpa
         every { jpaRepositoryMock.save(jpa) } returns jpaSalva
         every { mapperMock.toDomain(jpaSalva) } returns pecaSalva
 
         assertSame(pecaSalva, repository.salvar(peca))
 
-        verify(exactly = 1) { mapperMock.toJpa(peca) }
+        verify(exactly = 1) { mapperMock.toJPA(peca) }
         verify(exactly = 1) { jpaRepositoryMock.save(jpa) }
         verify(exactly = 1) { mapperMock.toDomain(jpaSalva) }
     }
