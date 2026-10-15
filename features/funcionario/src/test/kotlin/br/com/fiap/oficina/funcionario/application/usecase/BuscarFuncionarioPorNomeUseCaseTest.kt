@@ -5,6 +5,7 @@ import br.com.fiap.oficina.funcionario.application.mapper.FuncionarioMapper
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.shared.domain.exception.EntityNotFoundException
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -26,7 +27,7 @@ class BuscarFuncionarioPorNomeUseCaseTest {
             Funcionario.reconstruir(
                 id = "00000000-0000-0000-0000-000000000100",
                 nome = "Test",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
                 cargo = "Atendente",
             )
 
@@ -34,7 +35,7 @@ class BuscarFuncionarioPorNomeUseCaseTest {
             FuncionarioResponse(
                 id = funcionario.id.value.toString(),
                 nome = funcionario.nome,
-                cpf = funcionario.cpf.value,
+                cpf = funcionario.cpf.valor,
                 cargoDescricao = funcionario.cargo.descricao,
             )
 

@@ -7,6 +7,7 @@ import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.shared.domain.exception.BusinessRuleException
 import br.com.fiap.oficina.shared.domain.exception.EntityNotFoundException
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -46,7 +47,7 @@ class AtualizarFuncionarioUseCaseTest {
         assertNotNull(resultado)
         assertEquals(funcionario.id, salvo.captured.id)
         assertEquals("Test atualizado", salvo.captured.nome)
-        assertEquals(CPF_NOVO, salvo.captured.cpf.value)
+        assertEquals(CPF_NOVO, salvo.captured.cpf.valor)
         assertEquals(Cargo.MECANICO, salvo.captured.cargo)
 
         verify(exactly = 1) { repositoryMock.buscarPorId(any()) }
@@ -76,7 +77,7 @@ class AtualizarFuncionarioUseCaseTest {
 
         assertNotNull(resultado)
         assertEquals("Test atualizado", salvo.captured.nome)
-        assertEquals(CPF_EXISTENTE, salvo.captured.cpf.value)
+        assertEquals(CPF_EXISTENTE, salvo.captured.cpf.valor)
 
         verify(exactly = 1) { repositoryMock.buscarPorId(any()) }
         verify(exactly = 0) { repositoryMock.buscarPorCpf(any()) }
@@ -98,16 +99,16 @@ class AtualizarFuncionarioUseCaseTest {
         val salvo = slot<Funcionario>()
 
         every { repositoryMock.buscarPorId(any()) } returns funcionario
-        every { repositoryMock.buscarPorCpf(request.cpf) } returns null
+        every { repositoryMock.buscarPorCpf(CPF.from(request.cpf)) } returns null
         every { repositoryMock.salvar(capture(salvo)) } returns funcionario
 
         val resultado = usecase.executar(ID_EXISTENTE, request)
 
         assertNotNull(resultado)
-        assertEquals(CPF_NOVO, salvo.captured.cpf.value)
+        assertEquals(CPF_NOVO, salvo.captured.cpf.valor)
 
         verify(exactly = 1) { repositoryMock.buscarPorId(any()) }
-        verify(exactly = 1) { repositoryMock.buscarPorCpf(request.cpf) }
+        verify(exactly = 1) { repositoryMock.buscarPorCpf(CPF.from(request.cpf)) }
         verify(exactly = 1) { repositoryMock.salvar(any()) }
     }
 
@@ -189,7 +190,7 @@ class AtualizarFuncionarioUseCaseTest {
                 id = "00000000-0000-0000-0000-000000000200",
                 nome = "Test Existente",
                 cargo = "Mecânico",
-                cpf = CPF_NOVO,
+                cpf = CPF(CPF_NOVO),
             )
 
         every { repositoryMock.buscarPorId(any()) } returns funcionarioExistente()
@@ -211,12 +212,12 @@ class AtualizarFuncionarioUseCaseTest {
         id = ID_EXISTENTE,
         nome = "Test",
         cargo = "Atendente",
-        cpf = CPF_EXISTENTE,
+        cpf = CPF(CPF_EXISTENTE),
     )
 
     private companion object {
         const val ID_EXISTENTE = "00000000-0000-0000-0000-000000000100"
         const val CPF_EXISTENTE = "01234567890"
-        const val CPF_NOVO = "01234567891"
+        const val CPF_NOVO = "98765432100"
     }
 }

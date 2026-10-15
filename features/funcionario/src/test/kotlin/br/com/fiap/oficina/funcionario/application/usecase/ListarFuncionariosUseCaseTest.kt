@@ -3,6 +3,7 @@ package br.com.fiap.oficina.funcionario.application.usecase
 import br.com.fiap.oficina.funcionario.application.mapper.FuncionarioMapper
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -20,8 +21,8 @@ class ListarFuncionariosUseCaseTest {
     @DisplayName("Dado funcionários cadastrados, quando listar funcionários, então deve retornar todos os funcionários")
     fun givenRegisteredFuncionarios_whenListingFuncionarios_thenReturnAllFuncionarios() {
         val employees =
-            List(3) {
-                Funcionario.criar("Nome $it", "0123456789$it", "Atendente")
+            CPFS_VALIDOS.mapIndexed { indice, cpf ->
+                Funcionario.criar("Nome $indice", CPF(cpf), "Atendente")
             }
 
         every { repositoryMock.listarTodos() } returns employees
@@ -45,5 +46,9 @@ class ListarFuncionariosUseCaseTest {
 
         verify(exactly = 1) { repositoryMock.listarTodos() }
         verify(exactly = 0) { mapperMock.toResponse(any()) }
+    }
+
+    private companion object {
+        val CPFS_VALIDOS = listOf("01234567890", "98765432100", "12345678909")
     }
 }

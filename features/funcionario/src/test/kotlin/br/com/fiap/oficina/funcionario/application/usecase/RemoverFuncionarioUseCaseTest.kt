@@ -4,6 +4,7 @@ import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioId
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.shared.domain.exception.EntityNotFoundException
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -29,7 +30,7 @@ class RemoverFuncionarioUseCaseTest {
             Funcionario.reconstruir(
                 id = id,
                 nome = "Nome",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
                 cargo = "Atendente",
             )
 
