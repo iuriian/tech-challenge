@@ -1,8 +1,6 @@
 package br.com.fiap.oficina.shared.domain.valueobject
 
-data class CNPJ(
-    override val valor: String,
-) : Document() {
+data class CNPJ(override val valor: String) : Document() {
     override val tipo: TipoDocumento
         get() = TipoDocumento.CNPJ
 
@@ -22,4 +20,4 @@ data class CNPJ(
 
         fun from(entrada: String): CNPJ = CNPJ(normalizar(entrada))
     }
-} 
+}

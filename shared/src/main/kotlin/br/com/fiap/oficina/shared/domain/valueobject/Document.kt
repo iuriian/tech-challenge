@@ -13,14 +13,10 @@ abstract class Document {
 
         fun normalizar(entrada: String): String = entrada.replace(NAO_DIGITOS, "")
 
-        fun from(
-            valor: String,
-            tipo: TipoDocumento,
-        ): Document =
-            when (tipo) {
-                TipoDocumento.CPF -> CPF.from(valor)
-                TipoDocumento.CNPJ -> CNPJ.from(valor)
-            }
+        fun from(valor: String, tipo: TipoDocumento): Document = when (tipo) {
+            TipoDocumento.CPF -> CPF.from(valor)
+            TipoDocumento.CNPJ -> CNPJ.from(valor)
+        }
 
         fun from(entrada: String): Document {
             val normalizado = normalizar(entrada)

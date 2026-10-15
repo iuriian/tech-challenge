@@ -1,8 +1,6 @@
 package br.com.fiap.oficina.shared.domain.valueobject
 
-data class CPF(
-    override val valor: String,
-) : Document() {
+data class CPF(override val valor: String) : Document() {
     override val tipo: TipoDocumento
         get() = TipoDocumento.CPF
 
