@@ -49,4 +49,18 @@ data class Cliente(
                 contatos = contatos,
             )
     }
+
+    fun atualizar(
+        nome: String,
+        documento: Document,
+        email: String,
+        endereco: Endereco? = null,
+        contatos: List<Contato> = emptyList(),
+    ) = this.copy(
+        nome = nome,
+        documento = documento,
+        email = email,
+        endereco = endereco,
+        contatos = contatos,
+    )
 }
