@@ -4,6 +4,7 @@ import br.com.fiap.oficina.funcionario.application.dto.FuncionarioResponse
 import br.com.fiap.oficina.funcionario.application.mapper.FuncionarioMapper
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -28,7 +29,7 @@ class BuscarFuncionarioPorIdUseCaseTest {
             Funcionario.reconstruir(
                 id = id,
                 nome = "Nome",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
                 cargo = "Atendente",
             )
 
@@ -37,7 +38,7 @@ class BuscarFuncionarioPorIdUseCaseTest {
                 id = funcionario.id.toString(),
                 nome = funcionario.nome,
                 cargoDescricao = funcionario.cargo.descricao,
-                cpf = funcionario.cpf.value,
+                cpf = funcionario.cpf.valor,
             )
 
         every { repositoryMock.buscarPorId(any()) } returns funcionario

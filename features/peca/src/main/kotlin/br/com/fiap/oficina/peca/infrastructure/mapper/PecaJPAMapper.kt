@@ -2,9 +2,10 @@ package br.com.fiap.oficina.peca.infrastructure.mapper
 
 import br.com.fiap.oficina.peca.domain.Peca
 import br.com.fiap.oficina.peca.infrastructure.persistence.PecaJPA
+import br.com.fiap.oficina.shared.infrastructure.mapper.JPAMapper
 
-internal class PecaJPAMapper {
-    fun toDomain(jpa: PecaJPA): Peca = Peca.reconstruir(
+internal class PecaJPAMapper : JPAMapper<Peca, PecaJPA> {
+    override fun toDomain(jpa: PecaJPA): Peca = Peca.reconstruir(
         id = jpa.id.toString(),
         codigo = jpa.codigo,
         nome = jpa.nome,
@@ -17,7 +18,7 @@ internal class PecaJPAMapper {
         ativo = jpa.ativo,
     )
 
-    fun toJpa(domain: Peca): PecaJPA = PecaJPA(
+    override fun toJPA(domain: Peca): PecaJPA = PecaJPA(
         id = domain.id.value,
         codigo = domain.codigo,
         nome = domain.nome,

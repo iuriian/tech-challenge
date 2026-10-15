@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 internal class FuncionarioConfig {
     @Bean
-    fun mapper(): FuncionarioJPAMapper = FuncionarioJPAMapper()
+    fun funcionarioJPAMapper(): FuncionarioJPAMapper = FuncionarioJPAMapper()
 
     @Bean
     fun funcionarioRepository(

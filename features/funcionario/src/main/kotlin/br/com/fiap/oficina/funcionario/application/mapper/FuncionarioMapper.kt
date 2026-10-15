@@ -3,20 +3,22 @@ package br.com.fiap.oficina.funcionario.application.mapper
 import br.com.fiap.oficina.funcionario.application.dto.FuncionarioRequest
 import br.com.fiap.oficina.funcionario.application.dto.FuncionarioResponse
 import br.com.fiap.oficina.funcionario.domain.Funcionario
+import br.com.fiap.oficina.shared.application.mapper.ApplicationMapper
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.springframework.stereotype.Component
 
 @Component
-class FuncionarioMapper {
-    fun toDomain(request: FuncionarioRequest): Funcionario = Funcionario.criar(
+internal class FuncionarioMapper : ApplicationMapper<Funcionario, FuncionarioRequest, FuncionarioResponse> {
+    override fun toDomain(request: FuncionarioRequest): Funcionario = Funcionario.criar(
         nome = request.nome,
+        cpf = CPF.from(request.cpf),
         cargo = request.cargo,
-        cpf = request.cpf,
     )
 
-    fun toResponse(funcionario: Funcionario): FuncionarioResponse = FuncionarioResponse(
-        id = funcionario.id.toString(),
-        nome = funcionario.nome,
-        cargoDescricao = funcionario.cargo.descricao,
-        cpf = funcionario.cpf.value,
+    override fun toResponse(domain: Funcionario): FuncionarioResponse = FuncionarioResponse(
+        id = domain.id.toString(),
+        nome = domain.nome,
+        cargoDescricao = domain.cargo.descricao,
+        cpf = domain.cpf.valor,
     )
 }

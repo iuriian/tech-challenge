@@ -5,6 +5,7 @@ import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioId
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.funcionario.infrastructure.config.FuncionarioConfig
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.DisplayName
@@ -36,7 +37,7 @@ class FuncionarioRepositoryIntegrationTest {
     @Test
     @DisplayName("Dado um novo funcionário, quando salvar, então deve persistir e ser encontrado por id")
     fun givenNewFuncionario_whenSaving_thenPersistAndFindById() {
-        val funcionario = Funcionario.criar(nome = "João Silva", cpf = CPF_1, cargo = "Mecânico")
+        val funcionario = Funcionario.criar(nome = "João Silva", cpf = CPF(CPF_1), cargo = "Mecânico")
 
         val salvo = repository.salvar(funcionario)
         sincronizar()
@@ -48,24 +49,24 @@ class FuncionarioRepositoryIntegrationTest {
     @Test
     @DisplayName("Dado um funcionário existente, quando salvar alterações, então deve atualizar o registro")
     fun givenExistingFuncionario_whenSavingChanges_thenUpdateRecord() {
-        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Atendente"))
+        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Atendente"))
         sincronizar()
 
-        repository.salvar(funcionario.atualizar(nome = "João Silva", cpf = CPF_2, cargo = "Mecânico"))
+        repository.salvar(funcionario.atualizar(nome = "João Silva", cpf = CPF(CPF_2), cargo = "Mecânico"))
         sincronizar()
 
         val atualizado = repository.buscarPorId(funcionario.id)
 
         assertEquals(1, jpaRepository.count())
         assertEquals("João Silva", atualizado?.nome)
-        assertEquals(CPF_2, atualizado?.cpf?.value)
+        assertEquals(CPF_2, atualizado?.cpf?.valor)
         assertEquals("Mecânico", atualizado?.cargo?.descricao)
     }
 
     @Test
     @DisplayName("Dado um funcionário, quando salvar, então deve persistir o cargo pelo nome do enum")
     fun givenFuncionario_whenSaving_thenPersistCargoAsEnumName() {
-        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"))
+        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"))
         sincronizar()
 
         val cargo =
@@ -82,8 +83,8 @@ class FuncionarioRepositoryIntegrationTest {
     fun givenRegisteredFuncionarios_whenListingAll_thenReturnAll() {
         val funcionarios =
             listOf(
-                Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"),
-                Funcionario.criar(nome = "Maria", cpf = CPF_2, cargo = "Atendente"),
+                Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"),
+                Funcionario.criar(nome = "Maria", cpf = CPF(CPF_2), cargo = "Atendente"),
             )
         funcionarios.forEach(repository::salvar)
         sincronizar()
@@ -108,17 +109,17 @@ class FuncionarioRepositoryIntegrationTest {
     @Test
     @DisplayName("Dado um cpf cadastrado, quando buscar por cpf, então deve retornar o funcionário")
     fun givenRegisteredCpf_whenFindingByCpf_thenReturnFuncionario() {
-        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"))
+        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"))
         sincronizar()
 
-        assertEquals(funcionario, repository.buscarPorCpf(CPF_1))
-        assertNull(repository.buscarPorCpf(CPF_2))
+        assertEquals(funcionario, repository.buscarPorCpf(CPF(CPF_1)))
+        assertNull(repository.buscarPorCpf(CPF(CPF_2)))
     }
 
     @Test
     @DisplayName("Dado um nome cadastrado, quando buscar por nome, então deve retornar o funcionário")
     fun givenRegisteredNome_whenFindingByNome_thenReturnFuncionario() {
-        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"))
+        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"))
         sincronizar()
 
         assertEquals(funcionario, repository.buscarPorNome("João"))
@@ -128,7 +129,7 @@ class FuncionarioRepositoryIntegrationTest {
     @Test
     @DisplayName("Dado um funcionário cadastrado, quando deletar, então deve remover o registro")
     fun givenRegisteredFuncionario_whenDeleting_thenRemoveRecord() {
-        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"))
+        val funcionario = repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"))
         sincronizar()
 
         repository.deletar(funcionario.id)
@@ -150,7 +151,7 @@ class FuncionarioRepositoryIntegrationTest {
     @Test
     @DisplayName("Dado um cpf já cadastrado para outro funcionário, quando salvar, então deve violar a unicidade")
     fun givenCpfAlreadyRegistered_whenSaving_thenViolateUniqueConstraint() {
-        repository.salvar(Funcionario.criar(nome = "João", cpf = CPF_1, cargo = "Mecânico"))
+        repository.salvar(Funcionario.criar(nome = "João", cpf = CPF(CPF_1), cargo = "Mecânico"))
         sincronizar()
 
         assertFailsWith<DataIntegrityViolationException> {
@@ -176,7 +177,7 @@ class FuncionarioRepositoryIntegrationTest {
 
     companion object {
         private const val CPF_1 = "01234567890"
-        private const val CPF_2 = "01234567891"
+        private const val CPF_2 = "98765432100"
 
         @JvmStatic
         @ServiceConnection

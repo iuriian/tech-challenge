@@ -1,5 +1,6 @@
 package br.com.fiap.oficina.funcionario.domain
 
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -16,7 +17,7 @@ class FuncionarioTest {
             Funcionario.criar(
                 nome = "João",
                 cargo = "Atendente",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
             )
 
         assertEquals("João", funcionario.nome)
@@ -32,13 +33,13 @@ class FuncionarioTest {
             Funcionario.criar(
                 nome = "A",
                 cargo = "Atendente",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
             )
         val f2 =
             Funcionario.criar(
                 nome = "B",
                 cargo = "Atendente",
-                cpf = "01234567891",
+                cpf = CPF("98765432100"),
             )
 
         assertNotEquals(f1.id, f2.id)
@@ -53,7 +54,7 @@ class FuncionarioTest {
                 id = uuid,
                 nome = "Maria",
                 cargo = "Mecânico",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
             )
 
         assertEquals(UUID.fromString(uuid), funcionario.id.value)
@@ -65,7 +66,7 @@ class FuncionarioTest {
     @DisplayName("Dado um ID inválido, quando reconstruir funcionário, então deve lançar exceção")
     fun givenInvalidId_whenReconstructingFuncionario_thenShouldThrowException() {
         assertThrows(IllegalArgumentException::class.java) {
-            Funcionario.reconstruir(id = "invalid-uuid", nome = "X", cargo = "Atendente", cpf = "01234567890")
+            Funcionario.reconstruir(id = "invalid-uuid", nome = "X", cargo = "Atendente", cpf = CPF("01234567890"))
         }
     }
 
@@ -73,7 +74,7 @@ class FuncionarioTest {
     @DisplayName("Dado um cargo inválido, quando criar funcionário, então deve lançar exceção")
     fun givenInvalidCargo_whenCreatingFuncionario_thenShouldThrowException() {
         assertThrows(IllegalArgumentException::class.java) {
-            Funcionario.criar(nome = "Bad", cargo = "UNKNOWN", cpf = "01234567890")
+            Funcionario.criar(nome = "Bad", cargo = "UNKNOWN", cpf = CPF("01234567890"))
         }
     }
 
@@ -82,7 +83,7 @@ class FuncionarioTest {
     fun givenInvalidCargo_whenReconstructingFuncionario_thenShouldThrowException() {
         val uuid = "00000000-0000-0000-0000-000000000101"
         assertThrows(IllegalArgumentException::class.java) {
-            Funcionario.reconstruir(id = uuid, nome = "Bad", cargo = "INVALID", cpf = "01234567890")
+            Funcionario.reconstruir(id = uuid, nome = "Bad", cargo = "INVALID", cpf = CPF("01234567890"))
         }
     }
 
@@ -91,7 +92,7 @@ class FuncionarioTest {
     fun givenBlankNome_whenCreatingFuncionario_thenShouldThrowException() {
         val exception =
             assertThrows(IllegalArgumentException::class.java) {
-                Funcionario.criar(nome = "   ", cargo = "Atendente", cpf = "01234567890")
+                Funcionario.criar(nome = "   ", cargo = "Atendente", cpf = CPF("01234567890"))
             }
 
         assertEquals("Nome não pode ser vazio", exception.message)
@@ -104,19 +105,19 @@ class FuncionarioTest {
             Funcionario.criar(
                 nome = "João",
                 cargo = "Atendente",
-                cpf = "01234567890",
+                cpf = CPF("01234567890"),
             )
 
         val atualizado =
             funcionario.atualizar(
                 nome = "João Silva",
                 cargo = "Mecânico",
-                cpf = "01234567891",
+                cpf = CPF("98765432100"),
             )
 
         assertEquals(funcionario.id, atualizado.id)
         assertEquals("João Silva", atualizado.nome)
         assertEquals(Cargo.MECANICO, atualizado.cargo)
-        assertEquals("01234567891", atualizado.cpf.value)
+        assertEquals("98765432100", atualizado.cpf.valor)
     }
 }

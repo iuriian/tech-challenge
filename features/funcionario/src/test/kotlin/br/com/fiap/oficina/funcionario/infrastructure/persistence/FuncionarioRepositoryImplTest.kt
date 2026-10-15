@@ -4,6 +4,7 @@ import br.com.fiap.oficina.funcionario.domain.Cargo
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioId
 import br.com.fiap.oficina.funcionario.infrastructure.mapper.FuncionarioJPAMapper
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -49,9 +50,9 @@ class FuncionarioRepositoryImplTest {
     @DisplayName("Dado funcionários cadastrados, quando listar todos, então deve retornar todos convertidos")
     fun givenRegisteredFuncionarios_whenListingAll_thenReturnAllConverted() {
         val jpa1 = funcionarioJPA(id = ID_1, cpf = "01234567890")
-        val jpa2 = funcionarioJPA(id = ID_2, cpf = "01234567891")
+        val jpa2 = funcionarioJPA(id = ID_2, cpf = "98765432100")
         val funcionario1 = funcionario(id = ID_1, cpf = "01234567890")
-        val funcionario2 = funcionario(id = ID_2, cpf = "01234567891")
+        val funcionario2 = funcionario(id = ID_2, cpf = "98765432100")
 
         every { jpaRepositoryMock.findAll() } returns listOf(jpa1, jpa2)
         every { mapperMock.toDomain(jpa1) } returns funcionario1
@@ -111,22 +112,22 @@ class FuncionarioRepositoryImplTest {
         val jpa = funcionarioJPA()
         val funcionario = funcionario()
 
-        every { jpaRepositoryMock.findByCpf(CPF) } returns jpa
+        every { jpaRepositoryMock.findByCpf(CPF_VALIDO) } returns jpa
         every { mapperMock.toDomain(jpa) } returns funcionario
 
-        val resultado = repository.buscarPorCpf(CPF)
+        val resultado = repository.buscarPorCpf(CPF(CPF_VALIDO))
 
         assertSame(funcionario, resultado)
 
-        verify(exactly = 1) { jpaRepositoryMock.findByCpf(CPF) }
+        verify(exactly = 1) { jpaRepositoryMock.findByCpf(CPF_VALIDO) }
     }
 
     @Test
     @DisplayName("Dado um cpf inexistente, quando buscar por cpf, então deve retornar nulo")
     fun givenNonExistentCpf_whenFindingByCpf_thenReturnNull() {
-        every { jpaRepositoryMock.findByCpf(CPF) } returns null
+        every { jpaRepositoryMock.findByCpf(CPF_VALIDO) } returns null
 
-        val resultado = repository.buscarPorCpf(CPF)
+        val resultado = repository.buscarPorCpf(CPF(CPF_VALIDO))
 
         assertNull(resultado)
 
@@ -171,16 +172,16 @@ class FuncionarioRepositoryImplTest {
         verify(exactly = 1) { jpaRepositoryMock.deleteById(UUID.fromString(ID_1)) }
     }
 
-    private fun funcionario(id: String = ID_1, nome: String = NOME, cpf: String = CPF) =
-        Funcionario.reconstruir(id = id, nome = nome, cpf = cpf, cargo = Cargo.MECANICO.descricao)
+    private fun funcionario(id: String = ID_1, nome: String = NOME, cpf: String = CPF_VALIDO) =
+        Funcionario.reconstruir(id = id, nome = nome, cpf = CPF(cpf), cargo = Cargo.MECANICO.descricao)
 
-    private fun funcionarioJPA(id: String = ID_1, cpf: String = CPF) =
+    private fun funcionarioJPA(id: String = ID_1, cpf: String = CPF_VALIDO) =
         FuncionarioJPA(id = UUID.fromString(id), nome = NOME, cargo = Cargo.MECANICO, cpf = cpf)
 
     private companion object {
         const val ID_1 = "00000000-0000-0000-0000-000000000100"
         const val ID_2 = "00000000-0000-0000-0000-000000000200"
         const val NOME = "João Silva"
-        const val CPF = "01234567890"
+        const val CPF_VALIDO = "01234567890"
     }
 }

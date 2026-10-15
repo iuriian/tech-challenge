@@ -3,11 +3,12 @@ package br.com.fiap.oficina.peca.application.mapper
 import br.com.fiap.oficina.peca.application.dto.PecaRequest
 import br.com.fiap.oficina.peca.application.dto.PecaResponse
 import br.com.fiap.oficina.peca.domain.Peca
+import br.com.fiap.oficina.shared.application.mapper.ApplicationMapper
 import org.springframework.stereotype.Component
 
 @Component
-class PecaMapper {
-    fun toDomain(request: PecaRequest): Peca = Peca.criar(
+internal class PecaMapper : ApplicationMapper<Peca, PecaRequest, PecaResponse> {
+    override fun toDomain(request: PecaRequest): Peca = Peca.criar(
         codigo = request.codigo,
         nome = request.nome,
         descricao = request.descricao,
@@ -18,16 +19,16 @@ class PecaMapper {
         quantidade = request.qtdEstoque,
     )
 
-    fun toResponse(peca: Peca): PecaResponse = PecaResponse(
-        id = peca.id.toString(),
-        codigo = peca.codigo,
-        nome = peca.nome,
-        descricao = peca.descricao,
-        fabricante = peca.fabricante,
-        fornecedor = peca.fornecedor,
-        precoDeCompra = peca.precoCompra,
-        precoDeVenda = peca.precoVenda,
-        qtdEstoque = peca.quantidade,
-        ativo = peca.ativo,
+    override fun toResponse(domain: Peca): PecaResponse = PecaResponse(
+        id = domain.id.toString(),
+        codigo = domain.codigo,
+        nome = domain.nome,
+        descricao = domain.descricao,
+        fabricante = domain.fabricante,
+        fornecedor = domain.fornecedor,
+        precoDeCompra = domain.precoCompra,
+        precoDeVenda = domain.precoVenda,
+        qtdEstoque = domain.quantidade,
+        ativo = domain.ativo,
     )
 }

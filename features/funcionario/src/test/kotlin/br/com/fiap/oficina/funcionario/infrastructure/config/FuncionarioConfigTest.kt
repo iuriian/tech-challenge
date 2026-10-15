@@ -17,7 +17,7 @@ class FuncionarioConfigTest {
     @Test
     @DisplayName("Dado a configuração, quando criar o mapper, então deve retornar uma nova instância")
     fun givenConfig_whenCreatingMapper_thenReturnNewInstance() {
-        assertNotSame(config.mapper(), config.mapper())
+        assertNotSame(config.funcionarioJPAMapper(), config.funcionarioJPAMapper())
     }
 
     @Test
@@ -26,7 +26,7 @@ class FuncionarioConfigTest {
         val jpaRepositoryMock = mockk<FuncionarioJPARepository>()
         every { jpaRepositoryMock.findAll() } returns emptyList()
 
-        val repository = config.funcionarioRepository(jpaRepositoryMock, config.mapper())
+        val repository = config.funcionarioRepository(jpaRepositoryMock, config.funcionarioJPAMapper())
 
         assertInstanceOf(FuncionarioRepositoryImpl::class.java, repository)
 

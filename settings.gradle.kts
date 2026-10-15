@@ -11,3 +11,4 @@ include("shared")
 
 include("features:funcionario")
 include("features:peca")
+include("features:cliente")

@@ -3,6 +3,7 @@ package br.com.fiap.oficina.funcionario.infrastructure.mapper
 import br.com.fiap.oficina.funcionario.domain.Cargo
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.infrastructure.persistence.FuncionarioJPA
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -22,7 +23,7 @@ class FuncionarioJPAMapperTest {
             Funcionario.reconstruir(
                 id = ID_VALIDO,
                 nome = "João Silva",
-                cpf = CPF_VALIDO,
+                cpf = CPF(CPF_VALIDO),
                 cargo = "Mecânico",
             )
 
@@ -50,14 +51,14 @@ class FuncionarioJPAMapperTest {
 
         assertEquals(UUID.fromString(ID_VALIDO), funcionario.id.value)
         assertEquals("Maria Souza", funcionario.nome)
-        assertEquals(CPF_VALIDO, funcionario.cpf.value)
+        assertEquals(CPF_VALIDO, funcionario.cpf.valor)
         assertEquals(cargo, funcionario.cargo)
     }
 
     @Test
     @DisplayName("Dado um funcionário de domínio, quando converter ida e volta, então deve preservar a igualdade")
     fun givenDomainFuncionario_whenConvertingRoundTrip_thenPreserveEquality() {
-        val funcionario = Funcionario.criar(nome = "Ana Oliveira", cpf = CPF_VALIDO, cargo = "Atendente")
+        val funcionario = Funcionario.criar(nome = "Ana Oliveira", cpf = CPF(CPF_VALIDO), cargo = "Atendente")
 
         assertEquals(funcionario, mapper.toDomain(mapper.toJPA(funcionario)))
     }
@@ -78,7 +79,7 @@ class FuncionarioJPAMapperTest {
                 mapper.toDomain(jpa)
             }
 
-        assertEquals("CPF deve conter 11 dígitos", exception.message)
+        assertEquals("CPF inválido: 123", exception.message)
     }
 
     @Test

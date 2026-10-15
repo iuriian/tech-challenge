@@ -3,6 +3,7 @@ package br.com.fiap.oficina.funcionario.application.mapper
 import br.com.fiap.oficina.funcionario.application.dto.FuncionarioRequest
 import br.com.fiap.oficina.funcionario.domain.Cargo
 import br.com.fiap.oficina.funcionario.domain.Funcionario
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.DisplayName
@@ -28,7 +29,7 @@ class FuncionarioMapperTest {
         assertNotNull(funcionario.id.value)
         assertEquals("João Silva", funcionario.nome)
         assertEquals(Cargo.MECANICO, funcionario.cargo)
-        assertEquals(CPF_VALIDO, funcionario.cpf.value)
+        assertEquals(CPF_VALIDO, funcionario.cpf.valor)
     }
 
     @Test
@@ -64,7 +65,7 @@ class FuncionarioMapperTest {
                 mapper.toDomain(request)
             }
 
-        assertEquals("CPF deve conter 11 dígitos", exception.message)
+        assertEquals("CPF inválido: 123", exception.message)
     }
 
     @Test
@@ -75,7 +76,7 @@ class FuncionarioMapperTest {
                 id = ID_VALIDO,
                 nome = "Maria Souza",
                 cargo = "Mecânico",
-                cpf = CPF_VALIDO,
+                cpf = CPF(CPF_VALIDO),
             )
 
         val response = mapper.toResponse(funcionario)
@@ -94,7 +95,7 @@ class FuncionarioMapperTest {
                 id = ID_VALIDO,
                 nome = "João Silva",
                 cargo = "Atendente",
-                cpf = CPF_VALIDO,
+                cpf = CPF(CPF_VALIDO),
             )
 
         val response = mapper.toResponse(funcionario)

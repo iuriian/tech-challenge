@@ -6,6 +6,7 @@ import br.com.fiap.oficina.funcionario.application.mapper.FuncionarioMapper
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.shared.domain.exception.BusinessRuleException
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -27,26 +28,21 @@ class CriarFuncionarioUseCaseTest {
             FuncionarioRequest(
                 nome = "João Silva",
                 cargo = "Mecânico",
-                cpf = "12345678900",
+                cpf = CPF_VALIDO,
             )
 
-        val funcionario =
-            Funcionario.criar(
-                nome = request.nome,
-                cargo = request.cargo,
-                cpf = request.cpf,
-            )
+        val funcionario = funcionarioDe(request)
 
         val response =
             FuncionarioResponse(
                 id = funcionario.id.value.toString(),
                 nome = funcionario.nome,
                 cargoDescricao = funcionario.cargo.descricao,
-                cpf = funcionario.cpf.value,
+                cpf = funcionario.cpf.valor,
             )
 
-        every { repositoryMock.buscarPorCpf(request.cpf) } returns null
         every { mapperMock.toDomain(request) } returns funcionario
+        every { repositoryMock.buscarPorCpf(funcionario.cpf) } returns null
         every { repositoryMock.salvar(funcionario) } returns funcionario
         every { mapperMock.toResponse(funcionario) } returns response
 
@@ -54,8 +50,8 @@ class CriarFuncionarioUseCaseTest {
 
         assertEquals(response, result)
 
-        verify(exactly = 1) { repositoryMock.buscarPorCpf(request.cpf) }
         verify(exactly = 1) { mapperMock.toDomain(request) }
+        verify(exactly = 1) { repositoryMock.buscarPorCpf(funcionario.cpf) }
         verify(exactly = 1) { repositoryMock.salvar(funcionario) }
         verify(exactly = 1) { mapperMock.toResponse(funcionario) }
     }
@@ -67,17 +63,13 @@ class CriarFuncionarioUseCaseTest {
             FuncionarioRequest(
                 nome = "Maria Santos",
                 cargo = "Atendente",
-                cpf = "98765432100",
+                cpf = CPF_OUTRO,
             )
 
-        val funcionarioExistente =
-            Funcionario.criar(
-                nome = request.nome,
-                cargo = request.cargo,
-                cpf = request.cpf,
-            )
+        val funcionario = funcionarioDe(request)
 
-        every { repositoryMock.buscarPorCpf(request.cpf) } returns funcionarioExistente
+        every { mapperMock.toDomain(request) } returns funcionario
+        every { repositoryMock.buscarPorCpf(funcionario.cpf) } returns funcionarioDe(request)
 
         val exception =
             assertFailsWith<BusinessRuleException> {
@@ -86,8 +78,31 @@ class CriarFuncionarioUseCaseTest {
 
         assertEquals("Funcionário já cadastrado", exception.message)
 
-        verify(exactly = 1) { repositoryMock.buscarPorCpf(request.cpf) }
-        verify(exactly = 0) { mapperMock.toDomain(any()) }
+        verify(exactly = 1) { repositoryMock.buscarPorCpf(funcionario.cpf) }
+        verify(exactly = 0) { repositoryMock.salvar(any()) }
+        verify(exactly = 0) { mapperMock.toResponse(any()) }
+    }
+
+    @Test
+    @DisplayName("Dado CPF com máscara já registrado, quando criar funcionário, então deve lançar exceção")
+    fun givenMaskedCpfAlreadyRegistered_whenCreatingFuncionario_thenThrowException() {
+        val request =
+            FuncionarioRequest(
+                nome = "Maria Santos",
+                cargo = "Atendente",
+                cpf = CPF_VALIDO_MASCARADO,
+            )
+
+        val funcionario = funcionarioDe(request)
+
+        every { mapperMock.toDomain(request) } returns funcionario
+        every { repositoryMock.buscarPorCpf(CPF(CPF_VALIDO)) } returns funcionario
+
+        assertFailsWith<BusinessRuleException> {
+            useCase.executar(request)
+        }
+
+        verify(exactly = 1) { repositoryMock.buscarPorCpf(CPF(CPF_VALIDO)) }
         verify(exactly = 0) { repositoryMock.salvar(any()) }
     }
 
@@ -98,10 +113,9 @@ class CriarFuncionarioUseCaseTest {
             FuncionarioRequest(
                 nome = "Pedro Costa",
                 cargo = "CARGO_INEXISTENTE",
-                cpf = "11122233344",
+                cpf = CPF_TERCEIRO,
             )
 
-        every { repositoryMock.buscarPorCpf(request.cpf) } returns null
         every { mapperMock.toDomain(request) } throws IllegalArgumentException("Cargo inválido!")
 
         val exception =
@@ -111,8 +125,8 @@ class CriarFuncionarioUseCaseTest {
 
         assertEquals("Cargo inválido!", exception.message)
 
-        verify(exactly = 1) { repositoryMock.buscarPorCpf(request.cpf) }
         verify(exactly = 1) { mapperMock.toDomain(request) }
+        verify(exactly = 0) { repositoryMock.buscarPorCpf(any()) }
         verify(exactly = 0) { repositoryMock.salvar(any()) }
     }
 
@@ -123,18 +137,13 @@ class CriarFuncionarioUseCaseTest {
             FuncionarioRequest(
                 nome = "Ana Oliveira",
                 cargo = "Mecânico",
-                cpf = "55566677788",
+                cpf = CPF_QUARTO,
             )
 
-        val funcionario =
-            Funcionario.criar(
-                nome = request.nome,
-                cargo = request.cargo,
-                cpf = request.cpf,
-            )
+        val funcionario = funcionarioDe(request)
 
-        every { repositoryMock.buscarPorCpf(request.cpf) } returns null
         every { mapperMock.toDomain(request) } returns funcionario
+        every { repositoryMock.buscarPorCpf(funcionario.cpf) } returns null
         every { repositoryMock.salvar(funcionario) } throws RuntimeException("Erro ao salvar no banco")
 
         val exception =
@@ -144,9 +153,22 @@ class CriarFuncionarioUseCaseTest {
 
         assertEquals("Erro ao salvar no banco", exception.message)
 
-        verify(exactly = 1) { repositoryMock.buscarPorCpf(request.cpf) }
-        verify(exactly = 1) { mapperMock.toDomain(request) }
+        verify(exactly = 1) { repositoryMock.buscarPorCpf(funcionario.cpf) }
         verify(exactly = 1) { repositoryMock.salvar(funcionario) }
         verify(exactly = 0) { mapperMock.toResponse(any()) }
+    }
+
+    private fun funcionarioDe(request: FuncionarioRequest) = Funcionario.criar(
+        nome = request.nome,
+        cpf = CPF.from(request.cpf),
+        cargo = request.cargo,
+    )
+
+    private companion object {
+        const val CPF_VALIDO = "01234567890"
+        const val CPF_VALIDO_MASCARADO = "012.345.678-90"
+        const val CPF_OUTRO = "98765432100"
+        const val CPF_TERCEIRO = "12345678909"
+        const val CPF_QUARTO = "11122233396"
     }
 }

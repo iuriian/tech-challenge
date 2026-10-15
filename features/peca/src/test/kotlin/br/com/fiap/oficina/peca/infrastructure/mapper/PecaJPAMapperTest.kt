@@ -20,7 +20,7 @@ class PecaJPAMapperTest {
     @Test
     @DisplayName("Dado uma peça de domínio, quando converter para JPA, então deve mapear todos os campos")
     fun givenDomainPeca_whenConvertingToJPA_thenMapAllFields() {
-        val jpa = mapper.toJpa(peca(ativo = true))
+        val jpa = mapper.toJPA(peca(ativo = true))
 
         assertEquals(UUID.fromString(ID_VALIDO), jpa.id)
         assertEquals(CODIGO, jpa.codigo)
@@ -57,7 +57,7 @@ class PecaJPAMapperTest {
     fun givenDomainPeca_whenConvertingRoundTrip_thenPreserveEquality() {
         val peca = peca(ativo = true)
 
-        assertEquals(peca, mapper.toDomain(mapper.toJpa(peca)))
+        assertEquals(peca, mapper.toDomain(mapper.toJPA(peca)))
     }
 
     @Test
@@ -65,7 +65,7 @@ class PecaJPAMapperTest {
     fun givenJPAEntity_whenConvertingRoundTrip_thenPreserveFields() {
         val jpa = pecaJPA(ativo = false)
 
-        val resultado = mapper.toJpa(mapper.toDomain(jpa))
+        val resultado = mapper.toJPA(mapper.toDomain(jpa))
 
         assertEquals(jpa.id, resultado.id)
         assertEquals(jpa.codigo, resultado.codigo)

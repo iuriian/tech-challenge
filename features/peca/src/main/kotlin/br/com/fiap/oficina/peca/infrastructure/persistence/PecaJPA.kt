@@ -15,7 +15,7 @@ import java.util.UUID
         Index(name = "idx_codigo", columnList = "codigo", unique = true),
     ],
 )
-internal class PecaJPA(
+internal data class PecaJPA(
     @Id
     val id: UUID,
     @Column(nullable = false, unique = true, length = 15)
