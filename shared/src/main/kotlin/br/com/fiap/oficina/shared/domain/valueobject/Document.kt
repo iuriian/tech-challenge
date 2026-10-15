@@ -18,9 +18,19 @@ abstract class Document {
             tipo: TipoDocumento,
         ): Document =
             when (tipo) {
-                TipoDocumento.CPF -> CPF(valor)
-                TipoDocumento.CNPJ -> CNPJ(valor)
+                TipoDocumento.CPF -> CPF.from(valor)
+                TipoDocumento.CNPJ -> CNPJ.from(valor)
             }
+
+        fun from(entrada: String): Document {
+            val normalizado = normalizar(entrada)
+
+            return when (normalizado.length) {
+                CPF.TAMANHO -> CPF(normalizado)
+                CNPJ.TAMANHO -> CNPJ(normalizado)
+                else -> throw IllegalArgumentException("Documento inválido: $entrada")
+            }
+        }
     }
 }
 

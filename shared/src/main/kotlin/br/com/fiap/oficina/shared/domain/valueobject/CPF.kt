@@ -15,7 +15,7 @@ data class CPF(
     override fun formatado(): String = valor.replace(MASCARA, "$1.$2.$3-$4")
 
     companion object {
-        private const val TAMANHO = 11
+        internal const val TAMANHO = 11
         private val PESOS_PRIMEIRO_DIGITO = intArrayOf(10, 9, 8, 7, 6, 5, 4, 3, 2)
         private val PESOS_SEGUNDO_DIGITO = intArrayOf(11, 10, 9, 8, 7, 6, 5, 4, 3, 2)
         private val MASCARA = Regex("(\\d{3})(\\d{3})(\\d{3})(\\d{2})")

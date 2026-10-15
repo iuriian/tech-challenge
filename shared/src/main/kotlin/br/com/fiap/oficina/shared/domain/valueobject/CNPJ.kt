@@ -15,7 +15,7 @@ data class CNPJ(
     override fun formatado(): String = valor.replace(MASCARA, "$1.$2.$3/$4-$5")
 
     companion object {
-        private const val TAMANHO = 14
+        internal const val TAMANHO = 14
         private val PESOS_PRIMEIRO_DIGITO = intArrayOf(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
         private val PESOS_SEGUNDO_DIGITO = intArrayOf(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2)
         private val MASCARA = Regex("(\\d{2})(\\d{3})(\\d{3})(\\d{4})(\\d{2})")
