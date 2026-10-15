@@ -15,10 +15,7 @@ internal class AtualizarClienteUseCaseImpl(
     private val repository: ClienteRepository,
     private val mapper: ClienteMapper,
 ) : AtualizarClienteUseCase {
-    override fun executar(
-        id: String,
-        request: ClienteRequest,
-    ): ClienteResponse {
+    override fun executar(id: String, request: ClienteRequest): ClienteResponse {
         require(id.isNotBlank()) { "Id é obrigatório!" }
 
         val cliente =
@@ -41,10 +38,7 @@ internal class AtualizarClienteUseCaseImpl(
         return mapper.toResponse(repository.salvar(atualizado))
     }
 
-    private fun validarDocumento(
-        documento: Document,
-        cliente: Cliente,
-    ) {
+    private fun validarDocumento(documento: Document, cliente: Cliente) {
         if (documento.valor == cliente.documento.valor) return
 
         val clienteCadastrado = repository.buscarPorDocumento(documento)

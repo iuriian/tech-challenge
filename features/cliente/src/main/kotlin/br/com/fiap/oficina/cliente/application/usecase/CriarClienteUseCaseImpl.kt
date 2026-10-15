@@ -8,10 +8,8 @@ import br.com.fiap.oficina.shared.domain.exception.BusinessRuleException
 import org.springframework.stereotype.Service
 
 @Service
-internal class CriarClienteUseCaseImpl(
-    private val repository: ClienteRepository,
-    private val mapper: ClienteMapper,
-) : CriarClienteUseCase {
+internal class CriarClienteUseCaseImpl(private val repository: ClienteRepository, private val mapper: ClienteMapper) :
+    CriarClienteUseCase {
     override fun executar(request: ClienteRequest): ClienteResponse {
         val cliente = mapper.toDomain(request)
 

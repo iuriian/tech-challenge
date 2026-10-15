@@ -21,8 +21,6 @@ internal class ClienteConfig {
     fun contatoJpaMapper(): ContatoJPAMapper = ContatoJPAMapper()
 
     @Bean
-    fun clienteRepository(
-        jpaRepository: ClienteJPARepository,
-        mapper: ClienteJPAMapper,
-    ): ClienteRepository = ClienteRepositoryImpl(jpaRepository, mapper)
+    fun clienteRepository(jpaRepository: ClienteJPARepository, mapper: ClienteJPAMapper): ClienteRepository =
+        ClienteRepositoryImpl(jpaRepository, mapper)
 }

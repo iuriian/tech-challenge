@@ -48,16 +48,15 @@ data class Endereco(
             cidade: String,
             estado: String,
             cep: String,
-        ): Endereco =
-            Endereco(
-                id = EnderecoId.toUUID(id),
-                logradouro = logradouro,
-                numero = numero,
-                complemento = complemento,
-                bairro = bairro,
-                cidade = cidade,
-                estado = estado,
-                cep = cep,
-            )
+        ): Endereco = Endereco(
+            id = EnderecoId.toUUID(id),
+            logradouro = logradouro,
+            numero = numero,
+            complemento = complemento,
+            bairro = bairro,
+            cidade = cidade,
+            estado = estado,
+            cep = cep,
+        )
     }
 }
