@@ -5,18 +5,20 @@ internal object DigitoVerificador {
     private const val RESTO_MINIMO_SEM_DIGITO = 2
 
     fun validar(valor: String, tamanho: Int, pesosPrimeiroDigito: IntArray, pesosSegundoDigito: IntArray): Boolean {
-        if (valor.length != tamanho || !valor.all(Char::isDigit)) return false
-        if (valor.all { it == valor[0] }) return false
+        if (!formatoValido(valor, tamanho)) return false
 
-        val primeiroDigito = tamanho - 2
-        val segundoDigito = tamanho - 1
+        val posicaoPrimeiroDigito = tamanho - 2
+        val posicaoSegundoDigito = tamanho - 1
 
-        val primeiro = calcular(valor.take(primeiroDigito), pesosPrimeiroDigito)
-        if (primeiro != valor[primeiroDigito].digitToInt()) return false
-
-        val segundo = calcular(valor.take(segundoDigito), pesosSegundoDigito)
-        return segundo == valor[segundoDigito].digitToInt()
+        return digitoConfere(valor, posicaoPrimeiroDigito, pesosPrimeiroDigito) &&
+            digitoConfere(valor, posicaoSegundoDigito, pesosSegundoDigito)
     }
+
+    private fun formatoValido(valor: String, tamanho: Int): Boolean =
+        valor.length == tamanho && valor.all(Char::isDigit) && !valor.all { it == valor[0] }
+
+    private fun digitoConfere(valor: String, posicao: Int, pesos: IntArray): Boolean =
+        calcular(valor.take(posicao), pesos) == valor[posicao].digitToInt()
 
     private fun calcular(base: String, pesos: IntArray): Int {
         val soma = base.foldIndexed(0) { i, acc, digito -> acc + digito.digitToInt() * pesos[i] }
