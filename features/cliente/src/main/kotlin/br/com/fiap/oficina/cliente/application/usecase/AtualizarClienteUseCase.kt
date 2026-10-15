@@ -1,7 +1,11 @@
 package br.com.fiap.oficina.cliente.application.usecase
 
-import br.com.fiap.oficina.cliente.domain.Cliente
+import br.com.fiap.oficina.cliente.application.dto.ClienteRequest
+import br.com.fiap.oficina.cliente.application.dto.ClienteResponse
 
 interface AtualizarClienteUseCase {
-    fun executar(cliente: Cliente): Cliente
+    fun executar(
+        id: String,
+        request: ClienteRequest,
+    ): ClienteResponse
 }
