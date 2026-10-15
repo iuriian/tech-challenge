@@ -8,6 +8,7 @@ import br.com.fiap.oficina.funcionario.domain.FuncionarioId
 import br.com.fiap.oficina.funcionario.domain.FuncionarioRepository
 import br.com.fiap.oficina.shared.domain.exception.BusinessRuleException
 import br.com.fiap.oficina.shared.domain.exception.EntityNotFoundException
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
 import org.springframework.stereotype.Service
 
 @Service
@@ -22,20 +23,22 @@ internal class AtualizarFuncionarioUseCaseImpl(
             repository.buscarPorId(FuncionarioId.toUUID(id))
                 ?: throw EntityNotFoundException("Funcionário não encontrado!")
 
-        validarCpfDisponivel(request.cpf, funcionario)
+        val cpf = CPF.from(request.cpf)
+
+        validarCpfDisponivel(cpf, funcionario)
 
         val atualizado =
             funcionario.atualizar(
                 nome = request.nome,
-                cpf = request.cpf,
+                cpf = cpf,
                 cargo = request.cargo,
             )
 
         return mapper.toResponse(repository.salvar(atualizado))
     }
 
-    private fun validarCpfDisponivel(cpf: String, funcionario: Funcionario) {
-        if (cpf == funcionario.cpf.value) return
+    private fun validarCpfDisponivel(cpf: CPF, funcionario: Funcionario) {
+        if (cpf == funcionario.cpf) return
 
         val cpfCadastrado = repository.buscarPorCpf(cpf)
 

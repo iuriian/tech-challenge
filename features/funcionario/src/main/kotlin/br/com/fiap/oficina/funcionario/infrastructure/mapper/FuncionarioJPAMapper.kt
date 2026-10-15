@@ -2,20 +2,22 @@ package br.com.fiap.oficina.funcionario.infrastructure.mapper
 
 import br.com.fiap.oficina.funcionario.domain.Funcionario
 import br.com.fiap.oficina.funcionario.infrastructure.persistence.FuncionarioJPA
+import br.com.fiap.oficina.shared.domain.valueobject.CPF
+import br.com.fiap.oficina.shared.infrastructure.mapper.JPAMapper
 
-internal class FuncionarioJPAMapper {
-    fun toDomain(jpa: FuncionarioJPA): Funcionario = Funcionario
+internal class FuncionarioJPAMapper : JPAMapper<Funcionario, FuncionarioJPA> {
+    override fun toDomain(jpa: FuncionarioJPA): Funcionario = Funcionario
         .reconstruir(
             id = jpa.id.toString(),
             nome = jpa.nome,
-            cpf = jpa.cpf,
+            cpf = CPF(jpa.cpf),
             cargo = jpa.cargo.descricao,
         )
 
-    fun toJPA(entity: Funcionario): FuncionarioJPA = FuncionarioJPA(
-        id = entity.id.value,
-        nome = entity.nome,
-        cpf = entity.cpf.value,
-        cargo = entity.cargo,
+    override fun toJPA(domain: Funcionario): FuncionarioJPA = FuncionarioJPA(
+        id = domain.id.value,
+        nome = domain.nome,
+        cpf = domain.cpf.valor,
+        cargo = domain.cargo,
     )
 }
