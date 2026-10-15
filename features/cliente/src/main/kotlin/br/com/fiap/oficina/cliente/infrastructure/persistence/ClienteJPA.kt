@@ -1,4 +1,4 @@
-package br.com.fiap.oficina.infrastructure.persistence.jpa.entity
+package br.com.fiap.oficina.cliente.infrastructure.persistence
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -13,23 +13,19 @@ import java.util.UUID
 
 @Entity
 @Table(name = "clientes")
-class ClienteJpaEntity {
+internal data class ClienteJPA(
     @Id
-    lateinit var id: UUID
-
+    val id: UUID,
     @Column(nullable = false)
-    lateinit var nome: String
-
+    val nome: String,
     @Embedded
-    lateinit var documento: DocumentoEmbeddable
-
+    val documento: DocumentoEmbeddable,
     @Column(nullable = false, unique = true)
-    lateinit var email: String
-
+    val email: String,
     @OneToOne(cascade = [CascadeType.ALL], orphanRemoval = true)
     @JoinColumn(name = "endereco_id", referencedColumnName = "id")
-    var endereco: EnderecoJpaEntity? = null
-
-    @OneToMany(mappedBy = "cliente", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var contatos: MutableList<ContatoJpaEntity> = mutableListOf()
-}
+    val endereco: EnderecoJPA? = null,
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
+    @JoinColumn(name = "cliente_id")
+    val contatos: MutableList<ContatoJPA> = mutableListOf(),
+)
